@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.example.ums.ui.controller.LoginController"
+      spacing="12"
+      alignment="CENTER"
+      styleClass="app-root"
+      prefWidth="540"
+      prefHeight="360">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <VBox spacing="10" maxWidth="380" styleClass="auth-card">
+        <Label text="University Management System" styleClass="header-title login-title" wrapText="true" maxWidth="340" textAlignment="CENTER"/>
+        <Label text="Sign in to continue" styleClass="hint-label"/>
+        <TextField fx:id="emailField" promptText="Email" maxWidth="340" styleClass="app-input"/>
+        <PasswordField fx:id="passwordField" promptText="Password" maxWidth="340" styleClass="app-input"/>
+        <Button text="Login" onAction="#onLogin" maxWidth="340" styleClass="primary-button"/>
+        <Label fx:id="messageLabel" styleClass="validation-text"/>
+    </VBox>
+</VBox>
+

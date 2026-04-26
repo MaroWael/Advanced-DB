@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.example.ums.ui.controller.InstructorDashboardController"
+      spacing="10"
+      styleClass="app-root"
+      prefWidth="1100"
+      prefHeight="720">
+    <padding>
+        <Insets top="14" right="14" bottom="14" left="14"/>
+    </padding>
+
+    <HBox spacing="10" styleClass="top-bar">
+        <Label text="Instructor Dashboard" styleClass="header-title"/>
+        <Button text="Logout" onAction="#onLogout" styleClass="secondary-button"/>
+    </HBox>
+
+    <Label fx:id="messageLabel" text="Create quizzes, add questions, and view students." styleClass="hint-label"/>
+
+    <Label text="Create Quiz" styleClass="section-title"/>
+    <GridPane hgap="10" vgap="10" styleClass="section-card">
+        <Label text="Course" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="quizCourseCombo" GridPane.rowIndex="0" GridPane.columnIndex="1" prefWidth="250"/>
+
+        <Label text="Quiz Title" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
+        <TextField fx:id="quizTitleField" GridPane.rowIndex="0" GridPane.columnIndex="3"/>
+
+        <Button text="Create Quiz" onAction="#onCreateQuiz" GridPane.rowIndex="0" GridPane.columnIndex="4" styleClass="primary-button"/>
+    </GridPane>
+
+    <TableView fx:id="quizzesTable" prefHeight="150">
+        <columns>
+            <TableColumn fx:id="quizIdColumn" text="Quiz ID" prefWidth="120"/>
+            <TableColumn fx:id="quizTitleColumn" text="Quiz Title" prefWidth="320"/>
+        </columns>
+    </TableView>
+
+    <Label text="Add Question" styleClass="section-title"/>
+    <GridPane hgap="10" vgap="10" styleClass="section-card">
+        <Label text="Selected quiz from table" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+
+        <Label text="Question" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
+        <TextField fx:id="questionTextField" GridPane.rowIndex="0" GridPane.columnIndex="3"/>
+
+        <Label text="Option 1" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextField fx:id="option1Field" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label text="Option 2" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+        <TextField fx:id="option2Field" GridPane.rowIndex="1" GridPane.columnIndex="3"/>
+
+        <Label text="Option 3" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <TextField fx:id="option3Field" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+        <Label text="Option 4" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+        <TextField fx:id="option4Field" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
+
+        <Label text="Correct Index" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <TextField fx:id="correctOptionIndexField" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+        <Button text="Add Question" onAction="#onAddQuestion" GridPane.rowIndex="3" GridPane.columnIndex="3" styleClass="primary-button"/>
+    </GridPane>
+
+    <TableView fx:id="questionsTable" prefHeight="150">
+        <columns>
+            <TableColumn fx:id="questionIdColumn" text="Question ID" prefWidth="120"/>
+            <TableColumn fx:id="questionTextColumn" text="Question Text" prefWidth="540"/>
+        </columns>
+    </TableView>
+
+    <Label text="View Students In Course" styleClass="section-title"/>
+    <HBox spacing="8" styleClass="action-row">
+        <ComboBox fx:id="studentsCourseCombo" prefWidth="280" promptText="Select assigned course"/>
+        <Button text="Load Students" onAction="#onLoadStudents" styleClass="secondary-button"/>
+    </HBox>
+
+    <TableView fx:id="studentsTable" prefHeight="150">
+        <columns>
+            <TableColumn fx:id="studentIdColumn" text="ID" prefWidth="120"/>
+            <TableColumn fx:id="studentNameColumn" text="Name" prefWidth="240"/>
+            <TableColumn fx:id="studentEmailColumn" text="Email" prefWidth="260"/>
+        </columns>
+    </TableView>
+</VBox>
+

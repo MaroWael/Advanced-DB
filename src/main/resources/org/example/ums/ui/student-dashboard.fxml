@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.example.ums.ui.controller.StudentDashboardController"
+      spacing="10"
+      styleClass="app-root"
+      prefWidth="980"
+      prefHeight="720">
+    <padding>
+        <Insets top="14" right="14" bottom="14" left="14"/>
+    </padding>
+
+    <HBox spacing="10" styleClass="top-bar">
+        <Label fx:id="welcomeLabel" text="Welcome" styleClass="header-title"/>
+        <Button text="Logout" onAction="#onLogout" styleClass="secondary-button"/>
+    </HBox>
+
+    <Label fx:id="toastLabel" text="" styleClass="success-banner" managed="false" visible="false"/>
+
+    <Label text="Available Courses" styleClass="section-title"/>
+    <TableView fx:id="availableCoursesTable" prefHeight="150">
+        <columns>
+            <TableColumn fx:id="availableCourseCodeColumn" text="Code" prefWidth="150"/>
+            <TableColumn fx:id="availableCourseNameColumn" text="Course Name" prefWidth="450"/>
+        </columns>
+    </TableView>
+    <HBox spacing="8" styleClass="action-row">
+        <Button text="Enroll In Selected Course" onAction="#onEnrollSelectedCourse" styleClass="primary-button"/>
+    </HBox>
+
+    <Label text="My Enrolled Courses" styleClass="section-title"/>
+    <TableView fx:id="coursesTable" prefHeight="220">
+        <columns>
+            <TableColumn fx:id="courseCodeColumn" text="Code" prefWidth="150"/>
+            <TableColumn fx:id="courseNameColumn" text="Course Name" prefWidth="350"/>
+            <TableColumn fx:id="courseTimeColumn" text="Lecture Time" prefWidth="200"/>
+        </columns>
+    </TableView>
+
+    <Label text="Quizzes For Selected Course" styleClass="section-title"/>
+    <TableView fx:id="quizzesTable" prefHeight="150">
+        <columns>
+            <TableColumn fx:id="quizIdColumn" text="Quiz ID" prefWidth="140"/>
+            <TableColumn fx:id="quizTitleColumn" text="Quiz Title" prefWidth="500"/>
+        </columns>
+    </TableView>
+    <HBox spacing="8" styleClass="action-row">
+        <Button text="Take Selected Quiz" onAction="#onTakeSelectedQuiz" styleClass="primary-button"/>
+    </HBox>
+
+    <Label text="My Quiz Results" styleClass="section-title"/>
+    <TableView fx:id="resultsTable" prefHeight="160">
+        <columns>
+            <TableColumn fx:id="resultIdColumn" text="Result ID" prefWidth="120"/>
+            <TableColumn fx:id="resultQuizTitleColumn" text="Quiz" prefWidth="420"/>
+            <TableColumn fx:id="resultScoreColumn" text="Score" prefWidth="120"/>
+        </columns>
+    </TableView>
+</VBox>
+

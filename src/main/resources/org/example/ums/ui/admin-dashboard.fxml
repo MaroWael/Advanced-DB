@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.example.ums.ui.controller.AdminDashboardController"
+      spacing="10"
+      styleClass="app-root"
+      prefWidth="1100"
+      prefHeight="720">
+    <padding>
+        <Insets top="14" right="14" bottom="14" left="14"/>
+    </padding>
+
+    <HBox spacing="10" styleClass="top-bar">
+        <Label text="Admin Dashboard" styleClass="header-title"/>
+        <Button text="Logout" onAction="#onLogout" styleClass="secondary-button"/>
+    </HBox>
+
+    <Label fx:id="toastLabel" text="" styleClass="success-banner" managed="false" visible="false"/>
+
+    <TabPane tabClosingPolicy="UNAVAILABLE" styleClass="modern-tabs">
+        <tabs>
+            <Tab text="Users">
+                <VBox spacing="10" styleClass="card-panel">
+                    <padding>
+                        <Insets top="10" right="10" bottom="10" left="10"/>
+                    </padding>
+                    <TableView fx:id="usersTable" prefHeight="270">
+                        <columns>
+                            <TableColumn fx:id="userIdColumn" text="ID" prefWidth="90"/>
+                            <TableColumn fx:id="userNameColumn" text="Name" prefWidth="220"/>
+                            <TableColumn fx:id="userEmailColumn" text="Email" prefWidth="280"/>
+                            <TableColumn fx:id="userRoleColumn" text="Role" prefWidth="120"/>
+                        </columns>
+                    </TableView>
+
+                    <GridPane hgap="10" vgap="10" styleClass="form-grid">
+                        <Label text="Name" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                        <TextField fx:id="userNameField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                        <Label text="Email" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                        <TextField fx:id="userEmailField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                        <Label text="Password" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                        <TextField fx:id="userPasswordField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                        <Label text="Role" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
+                        <ComboBox fx:id="userRoleCombo" GridPane.rowIndex="0" GridPane.columnIndex="3"/>
+
+                        <Label text="Department" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+                        <ComboBox fx:id="userDepartmentCombo" GridPane.rowIndex="1" GridPane.columnIndex="3"/>
+
+                        <Label text="Level" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+                        <TextField fx:id="userLevelField" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
+
+                        <Label text="Major" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                        <TextField fx:id="userMajorField" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                        <Label text="Grade" GridPane.rowIndex="3" GridPane.columnIndex="2"/>
+                        <TextField fx:id="userGradeField" GridPane.rowIndex="3" GridPane.columnIndex="3"/>
+                    </GridPane>
+
+                    <HBox spacing="8" styleClass="action-row">
+                        <Button text="Add User" onAction="#onAddUser" styleClass="primary-button"/>
+                        <Button text="Delete Selected User" onAction="#onDeleteUser" styleClass="danger-button"/>
+                    </HBox>
+                </VBox>
+            </Tab>
+
+            <Tab text="Courses">
+                <VBox spacing="10" styleClass="card-panel">
+                    <padding>
+                        <Insets top="10" right="10" bottom="10" left="10"/>
+                    </padding>
+
+                    <TableView fx:id="coursesTable" prefHeight="270">
+                        <columns>
+                            <TableColumn fx:id="courseCodeColumn" text="Code" prefWidth="110"/>
+                            <TableColumn fx:id="courseNameColumn" text="Name" prefWidth="270"/>
+                            <TableColumn fx:id="courseLevelColumn" text="Level" prefWidth="110"/>
+                            <TableColumn fx:id="courseMajorColumn" text="Major" prefWidth="150"/>
+                            <TableColumn fx:id="courseInstructorIdColumn" text="Instructor ID" prefWidth="130"/>
+                        </columns>
+                    </TableView>
+
+                    <GridPane hgap="10" vgap="10" styleClass="form-grid">
+                        <Label text="Code" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                        <TextField fx:id="courseCodeField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                        <Label text="Name" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                        <TextField fx:id="courseNameField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                        <Label text="Level" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                        <TextField fx:id="courseLevelField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                        <Label text="Major" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
+                        <TextField fx:id="courseMajorField" GridPane.rowIndex="0" GridPane.columnIndex="3"/>
+
+                        <Label text="Lecture Time" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+                        <TextField fx:id="courseTimeField" GridPane.rowIndex="1" GridPane.columnIndex="3"/>
+
+                        <Label text="Instructor" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+                        <ComboBox fx:id="courseInstructorCombo" GridPane.rowIndex="2" GridPane.columnIndex="3" promptText="Assign instructor (optional)"/>
+                    </GridPane>
+
+                    <HBox spacing="8" styleClass="action-row">
+                        <Button text="Add Course" onAction="#onAddCourse" styleClass="primary-button"/>
+                        <Button text="Delete Selected Course" onAction="#onDeleteCourse" styleClass="danger-button"/>
+                    </HBox>
+                </VBox>
+            </Tab>
+        </tabs>
+    </TabPane>
+</VBox>
+
