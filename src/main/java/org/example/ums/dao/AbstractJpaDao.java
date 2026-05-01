@@ -1,7 +1,6 @@
 package org.example.ums.dao;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.criteria.CriteriaQuery;
 
 import java.util.List;
@@ -53,35 +52,11 @@ public abstract class AbstractJpaDao<T, ID> implements GenericDao<T, ID> {
     }
 
     protected <R> R execute(Function<EntityManager, R> action) {
-        EntityManager entityManager = JpaUtil.createEntityManager();
-        try {
-            return action.apply(entityManager);
-        } finally {
-            if (entityManager.isOpen()) {
-                entityManager.close();
-            }
-        }
+        return JpaUtil.execute(action);
     }
 
     protected <R> R executeInTransaction(Function<EntityManager, R> action) {
-        EntityManager entityManager = JpaUtil.createEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
-
-        try {
-            transaction.begin();
-            R result = action.apply(entityManager);
-            transaction.commit();
-            return result;
-        } catch (RuntimeException exception) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-            }
-            throw exception;
-        } finally {
-            if (entityManager.isOpen()) {
-                entityManager.close();
-            }
-        }
+        return JpaUtil.executeInTransaction(action);
     }
 }
 
