@@ -2,6 +2,7 @@ package org.example.ums.service;
 
 import org.example.ums.entity.Course;
 import org.example.ums.entity.Instructor;
+import org.example.ums.entity.Student;
 import org.example.ums.entity.User;
 
 import java.util.List;
@@ -18,6 +19,13 @@ public class AdminManagementService {
         });
     }
 
+    public Course addCourse(Course course) {
+        return JpaUtil.executeInTransaction(entityManager -> {
+            entityManager.persist(course);
+            return course;
+        });
+    }
+
     public boolean deleteUser(Integer userId) {
         return JpaUtil.executeInTransaction(entityManager -> {
             User user = entityManager.find(User.class, userId);
@@ -26,13 +34,6 @@ public class AdminManagementService {
             }
             entityManager.remove(user);
             return true;
-        });
-    }
-
-    public Course addCourse(Course course) {
-        return JpaUtil.executeInTransaction(entityManager -> {
-            entityManager.persist(course);
-            return course;
         });
     }
 
@@ -67,5 +68,15 @@ public class AdminManagementService {
                         Instructor.class)
                 .getResultList());
     }
-}
 
+    public Student updateStudentLevel(Integer userId, Integer level) {
+        return JpaUtil.executeInTransaction(entityManager -> {
+            Student student = entityManager.find(Student.class, userId);
+            if (student == null) {
+                throw new IllegalArgumentException("Student not found.");
+            }
+            student.setLevel(level);
+            return student;
+        });
+    }
+}

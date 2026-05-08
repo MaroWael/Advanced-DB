@@ -29,17 +29,12 @@ public class AcademicQueryService {
 
     public List<Course> getAvailableCoursesForStudent(Integer studentId) {
         return JpaUtil.execute(entityManager -> {
-            // Get the student to fetch their level
             Student student = entityManager.find(Student.class, studentId);
             if (student == null || student.getLevel() == null) {
-                return List.of(); // Return empty list if student not found or has no level
+                return List.of();
             }
 
             String studentLevel = String.valueOf(student.getLevel());
-
-            // Query available courses that:
-            // 1. Match the student's level (or have no level requirement)
-            // 2. Are not already enrolled by the student
             return entityManager.createQuery(
                     "select c from Course c where c.code not in " +
                     "(select ec.code from Student s join s.courses ec where s.id = :studentId) " +
@@ -83,17 +78,6 @@ public class AcademicQueryService {
                         "select qr from QuizResult qr join qr.student s where s.id = :studentId order by qr.id desc",
                         QuizResult.class)
                 .setParameter("studentId", studentId)
-                .getResultList());
-    }
-
-    public List<StudentScoreView> getTopScoringStudents(int limit) {
-        return JpaUtil.execute(entityManager -> entityManager.createQuery(
-                        "select new org.example.ums.service.dto.StudentScoreView(s.id, s.name, avg(qr.score), count(qr.id)) " +
-                                "from QuizResult qr join qr.student s " +
-                                "group by s.id, s.name " +
-                                "order by avg(qr.score) desc",
-                        StudentScoreView.class)
-                .setMaxResults(limit)
                 .getResultList());
     }
 

@@ -39,6 +39,8 @@ public class AdminDashboardController {
     private TableColumn<User, String> userEmailColumn;
     @FXML
     private TableColumn<User, Role> userRoleColumn;
+    @FXML
+    private TableColumn<User, String> userLevelColumn;
 
     @FXML
     private TextField userNameField;
@@ -92,6 +94,14 @@ public class AdminDashboardController {
         userNameColumn.setCellValueFactory(cell -> new ReadOnlyStringWrapper(cell.getValue().getName()));
         userEmailColumn.setCellValueFactory(cell -> new ReadOnlyStringWrapper(cell.getValue().getEmail()));
         userRoleColumn.setCellValueFactory(cell -> new ReadOnlyObjectWrapper<>(cell.getValue().getRole()));
+        userLevelColumn.setCellValueFactory(cell -> {
+            User user = cell.getValue();
+            if (user instanceof Student student) {
+                Integer level = student.getLevel();
+                return new ReadOnlyStringWrapper(level == null ? "" : String.valueOf(level));
+            }
+            return new ReadOnlyStringWrapper("");
+        });
 
         courseCodeColumn.setCellValueFactory(cell -> new ReadOnlyStringWrapper(cell.getValue().getCode()));
         courseNameColumn.setCellValueFactory(cell -> new ReadOnlyStringWrapper(cell.getValue().getCourseName()));
@@ -121,6 +131,9 @@ public class AdminDashboardController {
 
         userRoleCombo.getSelectionModel().selectedItemProperty().addListener((observable, oldRole, selectedRole) ->
                 updateUserFormForRole(selectedRole));
+
+        usersTable.getSelectionModel().selectedItemProperty().addListener((observable, oldUser, selectedUser) ->
+                populateUserForm(selectedUser));
 
         refreshUsers();
         refreshCourses();
@@ -292,5 +305,61 @@ public class AdminDashboardController {
         }
     }
 
-}
+    @FXML
+    private void onUpdateStudentLevel() {
+        User selected = usersTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            UiHelpers.showError("Validation Error", "Action failed", "Select a user first.");
+            return;
+        }
+        if (!(selected instanceof Student student)) {
+            UiHelpers.showError("Validation Error", "Action failed", "Selected user is not a student.");
+            return;
+        }
+        Integer currentLevel = student.getLevel();
+        if (currentLevel == null) {
+            UiHelpers.showError("Validation Error", "Action failed", "Student level is missing.");
+            return;
+        }
+        if (currentLevel >= 4) {
+            UiHelpers.showError("Validation Error", "Action failed", "Student is already at the maximum level.");
+            return;
+        }
+        try {
+            Integer nextLevel = currentLevel + 1;
+            adminService.updateStudentLevel(student.getId(), nextLevel);
+            refreshUsers();
+            UiHelpers.showSuccessToast(toastLabel, "Student level updated to " + nextLevel + ".");
+        } catch (RuntimeException exception) {
+            UiHelpers.showError("Validation Error", "Action failed", exception.getMessage());
+        }
+    }
 
+    private void populateUserForm(User selectedUser) {
+        if (selectedUser == null) {
+            return;
+        }
+        userNameField.setText(selectedUser.getName());
+        userEmailField.setText(selectedUser.getEmail());
+        userPasswordField.clear();
+        userRoleCombo.setValue(selectedUser.getRole());
+
+        if (selectedUser instanceof Student student) {
+            userDepartmentCombo.setValue(student.getDepartment());
+            userLevelField.setText(student.getLevel() == null ? "" : String.valueOf(student.getLevel()));
+            userMajorField.setText(student.getMajor() == null ? "" : student.getMajor());
+            userGradeField.setText(student.getGrade() == null ? "" : String.valueOf(student.getGrade()));
+            updateUserFormForRole(Role.STUDENT);
+            return;
+        }
+
+        if (selectedUser instanceof Instructor instructor) {
+            userDepartmentCombo.setValue(instructor.getDepartment());
+            updateUserFormForRole(Role.INSTRUCTOR);
+            return;
+        }
+
+        updateUserFormForRole(Role.ADMIN);
+    }
+
+}

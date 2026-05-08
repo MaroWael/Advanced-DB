@@ -43,6 +43,7 @@
                             <TableColumn fx:id="userNameColumn" text="Name" prefWidth="220"/>
                             <TableColumn fx:id="userEmailColumn" text="Email" prefWidth="280"/>
                             <TableColumn fx:id="userRoleColumn" text="Role" prefWidth="120"/>
+                            <TableColumn fx:id="userLevelColumn" text="Level" prefWidth="90"/>
                         </columns>
                     </TableView>
 
@@ -75,6 +76,7 @@
                     <HBox spacing="8" styleClass="action-row">
                         <Button text="Add User" onAction="#onAddUser" styleClass="primary-button"/>
                         <Button text="Delete Selected User" onAction="#onDeleteUser" styleClass="danger-button"/>
+                        <Button text="Update Student Level" onAction="#onUpdateStudentLevel" styleClass="secondary-button"/>
                     </HBox>
                 </VBox>
             </Tab>

@@ -23,62 +23,6 @@ public class AcademicManagementService {
         });
     }
 
-    public Course addNewCourse(Course course) {
-        return JpaUtil.executeInTransaction(entityManager -> {
-            entityManager.persist(course);
-            return course;
-        });
-    }
-
-    public Quiz addQuizWithQuestions(String courseCode, Quiz quiz, List<Question> questions) {
-        return JpaUtil.executeInTransaction(entityManager -> {
-            Course course = entityManager.find(Course.class, courseCode);
-            if (course == null) {
-                throw new IllegalArgumentException("Course not found for code: " + courseCode);
-            }
-
-            quiz.setCourse(course);
-            course.getQuizzes().add(quiz);
-
-            for (Question question : questions) {
-                question.setQuiz(quiz);
-                quiz.getQuestions().add(question);
-            }
-
-            entityManager.persist(quiz);
-            return quiz;
-        });
-    }
-
-    public Optional<Student> updateStudentGrade(Integer studentId, Double newGrade) {
-        return JpaUtil.executeInTransaction(entityManager -> {
-            Student student = entityManager.find(Student.class, studentId);
-            if (student == null) {
-                return Optional.empty();
-            }
-
-            student.setGrade(newGrade);
-            return Optional.of(student);
-        });
-    }
-
-    public Optional<Course> updateCourseInstructor(String courseCode, Integer instructorId) {
-        return JpaUtil.executeInTransaction(entityManager -> {
-            Course course = entityManager.find(Course.class, courseCode);
-            if (course == null) {
-                return Optional.empty();
-            }
-
-            Instructor instructor = entityManager.find(Instructor.class, instructorId);
-            if (instructor == null) {
-                throw new IllegalArgumentException("Instructor not found for id: " + instructorId);
-            }
-
-            course.setInstructor(instructor);
-            return Optional.of(course);
-        });
-    }
-
     public boolean enrollStudentInCourse(Integer studentId, String courseCode) {
         return JpaUtil.executeInTransaction(entityManager -> {
             Student student = entityManager.find(Student.class, studentId);
@@ -91,18 +35,6 @@ public class AcademicManagementService {
             boolean addedToCourse = course.getStudents().add(student);
             boolean addedToStudent = student.getCourses().add(course);
             return addedToCourse || addedToStudent;
-        });
-    }
-
-    public boolean deleteQuiz(Integer quizId) {
-        return JpaUtil.executeInTransaction(entityManager -> {
-            Quiz quiz = entityManager.find(Quiz.class, quizId);
-            if (quiz == null) {
-                return false;
-            }
-
-            entityManager.remove(quiz);
-            return true;
         });
     }
 
