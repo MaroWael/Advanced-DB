@@ -4,14 +4,10 @@ import org.example.ums.entity.Course;
 import org.example.ums.entity.Question;
 import org.example.ums.entity.Quiz;
 
-public class InstructorManagementService extends JpaServiceSupport {
-
-    public Quiz createQuiz(String courseCode, String title) {
-        return createQuiz(null, courseCode, title);
-    }
+public class InstructorManagementService {
 
     public Quiz createQuiz(Integer instructorId, String courseCode, String title) {
-        return executeInTransaction(entityManager -> {
+        return JpaUtil.executeInTransaction(entityManager -> {
             Course course = entityManager.find(Course.class, courseCode);
             if (course == null) {
                 throw new IllegalArgumentException("Course not found: " + courseCode);
@@ -33,16 +29,6 @@ public class InstructorManagementService extends JpaServiceSupport {
         });
     }
 
-    public Question addQuestion(Integer quizId,
-                                String text,
-                                String option1,
-                                String option2,
-                                String option3,
-                                String option4,
-                                Integer correctOptionIndex) {
-        return addQuestion(null, quizId, text, option1, option2, option3, option4, correctOptionIndex);
-    }
-
     public Question addQuestion(Integer instructorId,
                                 Integer quizId,
                                 String text,
@@ -51,7 +37,7 @@ public class InstructorManagementService extends JpaServiceSupport {
                                 String option3,
                                 String option4,
                                 Integer correctOptionIndex) {
-        return executeInTransaction(entityManager -> {
+        return JpaUtil.executeInTransaction(entityManager -> {
             Quiz quiz = entityManager.find(Quiz.class, quizId);
             if (quiz == null) {
                 throw new IllegalArgumentException("Quiz not found: " + quizId);

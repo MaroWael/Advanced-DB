@@ -9,13 +9,13 @@ import org.example.ums.entity.User;
 import org.example.ums.service.AcademicQueryService;
 import org.example.ums.service.InstructorManagementService;
 import org.example.ums.ui.SceneNavigator;
+import org.example.ums.ui.UiHelpers;
 import org.example.ums.ui.UserSession;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -134,7 +134,7 @@ public class InstructorDashboardController {
             if (selectedCourse == null) {
                 throw new IllegalArgumentException("Select a course first.");
             }
-            String title = requireText(quizTitleField.getText(), "Quiz title is required.");
+            String title = UiHelpers.requireText(quizTitleField.getText(), "Quiz title is required.");
 
             User user = UserSession.getCurrentUser();
             if (!(user instanceof Instructor)) {
@@ -148,7 +148,7 @@ public class InstructorDashboardController {
 
             loadQuizzesForSelectedCourse(selectedCourse);
         } catch (RuntimeException exception) {
-            showError(exception.getMessage());
+            UiHelpers.showError("Action Error", "Operation failed", exception.getMessage());
         }
     }
 
@@ -160,8 +160,8 @@ public class InstructorDashboardController {
                 throw new IllegalArgumentException("Select a quiz from the table first.");
             }
 
-            String text = requireText(questionTextField.getText(), "Question text is required.");
-            Integer correctOptionIndex = Integer.parseInt(requireText(correctOptionIndexField.getText(), "Correct option index is required."));
+            String text = UiHelpers.requireText(questionTextField.getText(), "Question text is required.");
+            Integer correctOptionIndex = Integer.parseInt(UiHelpers.requireText(correctOptionIndexField.getText(), "Correct option index is required."));
             if (correctOptionIndex < 1 || correctOptionIndex > 4) {
                 throw new IllegalArgumentException("Correct option index must be between 1 and 4.");
             }
@@ -187,7 +187,7 @@ public class InstructorDashboardController {
             messageLabel.setText("Question added with id: " + question.getId());
             loadQuestionsForSelectedQuiz(selectedQuiz);
         } catch (RuntimeException exception) {
-            showError(exception.getMessage());
+            UiHelpers.showError("Action Error", "Operation failed", exception.getMessage());
         }
     }
 
@@ -202,7 +202,7 @@ public class InstructorDashboardController {
             studentsTable.setItems(FXCollections.observableArrayList(students));
             messageLabel.setText("Loaded " + students.size() + " students.");
         } catch (RuntimeException exception) {
-            showError(exception.getMessage());
+            UiHelpers.showError("Action Error", "Operation failed", exception.getMessage());
         }
     }
 
@@ -210,13 +210,6 @@ public class InstructorDashboardController {
     private void onLogout() {
         UserSession.clear();
         SceneNavigator.switchTo("/org/example/ums/ui/login-view.fxml", "University Management System");
-    }
-
-    private String requireText(String value, String message) {
-        if (value == null || value.trim().isEmpty()) {
-            throw new IllegalArgumentException(message);
-        }
-        return value.trim();
     }
 
     private void loadInstructorCourses() {
@@ -264,12 +257,5 @@ public class InstructorDashboardController {
         questionsTable.setItems(FXCollections.observableArrayList(questions));
     }
 
-    private void showError(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Action Error");
-        alert.setHeaderText("Operation failed");
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
 }
 

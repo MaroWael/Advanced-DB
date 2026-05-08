@@ -10,18 +10,18 @@ import org.example.ums.entity.QuizResult;
 import org.example.ums.entity.Student;
 import org.example.ums.entity.enums.Department;
 
-public class DataBootstrapService extends JpaServiceSupport {
+public class DataBootstrapService {
 
     public void seedIfEmpty() {
-        Long userCount = execute(entityManager -> entityManager.createQuery("select count(u) from User u", Long.class)
+        Long userCount = JpaUtil.execute(entityManager -> entityManager.createQuery("select count(u) from User u", Long.class)
                 .getSingleResult());
         if (userCount != null && userCount > 0) {
             return;
         }
 
-        executeInTransaction(entityManager -> {
+        JpaUtil.executeInTransaction(entityManager -> {
             Admin admin = new Admin("System Admin", "admin@ums.local", "admin123");
-            Instructor instructor = new Instructor("Dr. Lina", "instructor@ums.local", "inst123", Department.CS);
+            Instructor instructor = new Instructor("Dr. Hashim", "instructor@ums.local", "inst123", Department.CS);
             Student studentOne = new Student("Ali Hassan", "student1@ums.local", "stud123", 2, "Computer Science", 3.4, Department.CS);
             Student studentTwo = new Student("Mona Adel", "student2@ums.local", "stud123", 3, "Information Systems", 3.8, Department.IS);
 

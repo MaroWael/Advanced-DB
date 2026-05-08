@@ -1,4 +1,4 @@
-package org.example.ums.dao;
+package org.example.ums.service;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -6,6 +6,7 @@ import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 
 import java.util.function.Function;
+
 public final class JpaUtil {
 
     private static final String DEFAULT_PERSISTENCE_UNIT = "umsPU";

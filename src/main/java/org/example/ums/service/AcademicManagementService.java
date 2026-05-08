@@ -14,24 +14,24 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-public class AcademicManagementService extends JpaServiceSupport {
+public class AcademicManagementService {
 
     public Student addNewStudent(Student student) {
-        return executeInTransaction(entityManager -> {
+        return JpaUtil.executeInTransaction(entityManager -> {
             entityManager.persist(student);
             return student;
         });
     }
 
     public Course addNewCourse(Course course) {
-        return executeInTransaction(entityManager -> {
+        return JpaUtil.executeInTransaction(entityManager -> {
             entityManager.persist(course);
             return course;
         });
     }
 
     public Quiz addQuizWithQuestions(String courseCode, Quiz quiz, List<Question> questions) {
-        return executeInTransaction(entityManager -> {
+        return JpaUtil.executeInTransaction(entityManager -> {
             Course course = entityManager.find(Course.class, courseCode);
             if (course == null) {
                 throw new IllegalArgumentException("Course not found for code: " + courseCode);
@@ -51,7 +51,7 @@ public class AcademicManagementService extends JpaServiceSupport {
     }
 
     public Optional<Student> updateStudentGrade(Integer studentId, Double newGrade) {
-        return executeInTransaction(entityManager -> {
+        return JpaUtil.executeInTransaction(entityManager -> {
             Student student = entityManager.find(Student.class, studentId);
             if (student == null) {
                 return Optional.empty();
@@ -63,7 +63,7 @@ public class AcademicManagementService extends JpaServiceSupport {
     }
 
     public Optional<Course> updateCourseInstructor(String courseCode, Integer instructorId) {
-        return executeInTransaction(entityManager -> {
+        return JpaUtil.executeInTransaction(entityManager -> {
             Course course = entityManager.find(Course.class, courseCode);
             if (course == null) {
                 return Optional.empty();
@@ -80,7 +80,7 @@ public class AcademicManagementService extends JpaServiceSupport {
     }
 
     public boolean enrollStudentInCourse(Integer studentId, String courseCode) {
-        return executeInTransaction(entityManager -> {
+        return JpaUtil.executeInTransaction(entityManager -> {
             Student student = entityManager.find(Student.class, studentId);
             Course course = entityManager.find(Course.class, courseCode);
 
@@ -95,7 +95,7 @@ public class AcademicManagementService extends JpaServiceSupport {
     }
 
     public boolean deleteQuiz(Integer quizId) {
-        return executeInTransaction(entityManager -> {
+        return JpaUtil.executeInTransaction(entityManager -> {
             Quiz quiz = entityManager.find(Quiz.class, quizId);
             if (quiz == null) {
                 return false;
@@ -107,7 +107,7 @@ public class AcademicManagementService extends JpaServiceSupport {
     }
 
     public boolean removeStudentFromCourse(Integer studentId, String courseCode) {
-        return executeInTransaction(entityManager -> {
+        return JpaUtil.executeInTransaction(entityManager -> {
             Student student = entityManager.find(Student.class, studentId);
             Course course = entityManager.find(Course.class, courseCode);
 
@@ -123,7 +123,7 @@ public class AcademicManagementService extends JpaServiceSupport {
     }
 
     public Optional<QuizResult> submitQuizAttempt(Integer studentId, Integer quizId, Map<Integer, Integer> chosenOptionIndexes) {
-        return executeInTransaction(entityManager -> {
+        return JpaUtil.executeInTransaction(entityManager -> {
             Student student = entityManager.find(Student.class, studentId);
             Quiz quiz = entityManager.find(Quiz.class, quizId);
             if (student == null || quiz == null) {

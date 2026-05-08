@@ -1,14 +1,17 @@
 package org.example.ums.service;
 
+import org.example.ums.entity.Admin;
+import org.example.ums.entity.Instructor;
+import org.example.ums.entity.Student;
 import org.example.ums.entity.User;
 import org.example.ums.entity.enums.Role;
 
 import java.util.Optional;
 
-public class AuthService extends JpaServiceSupport {
+public class AuthService {
 
 	public Optional<User> authenticate(String email, String password) {
-		return execute(entityManager -> {
+		return JpaUtil.execute(entityManager -> {
 			User user = entityManager.createQuery(
 						"select u from User u where u.email = :email and u.password = :password",
 						User.class)
@@ -23,13 +26,13 @@ public class AuthService extends JpaServiceSupport {
 			}
 
 			if (user.getRole() == Role.STUDENT) {
-				return Optional.ofNullable(entityManager.find(org.example.ums.entity.Student.class, user.getId()));
+				return Optional.ofNullable(entityManager.find(Student.class, user.getId()));
 			}
 			if (user.getRole() == Role.INSTRUCTOR) {
-				return Optional.ofNullable(entityManager.find(org.example.ums.entity.Instructor.class, user.getId()));
+				return Optional.ofNullable(entityManager.find(Instructor.class, user.getId()));
 			}
 			if (user.getRole() == Role.ADMIN) {
-				return Optional.ofNullable(entityManager.find(org.example.ums.entity.Admin.class, user.getId()));
+				return Optional.ofNullable(entityManager.find(Admin.class, user.getId()));
 			}
 
 			return Optional.of(user);

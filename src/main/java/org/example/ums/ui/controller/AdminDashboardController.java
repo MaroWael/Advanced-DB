@@ -9,21 +9,19 @@ import org.example.ums.entity.enums.Department;
 import org.example.ums.entity.enums.Role;
 import org.example.ums.service.AdminManagementService;
 import org.example.ums.ui.SceneNavigator;
+import org.example.ums.ui.UiHelpers;
 import org.example.ums.ui.UserSession;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.util.StringConverter;
-import javafx.util.Duration;
 
 import java.util.List;
 
@@ -138,9 +136,9 @@ public class AdminDashboardController {
             refreshUsers();
             refreshInstructorOptions();
             clearUserForm();
-            showSuccessToast("User added successfully.");
+            UiHelpers.showSuccessToast(toastLabel, "User added successfully.");
         } catch (RuntimeException exception) {
-            showError(exception.getMessage());
+            UiHelpers.showError("Validation Error", "Action failed", exception.getMessage());
         }
     }
 
@@ -149,7 +147,7 @@ public class AdminDashboardController {
     private void onDeleteUser() {
         User selected = usersTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            showError("Select a user first.");
+            UiHelpers.showError("Validation Error", "Action failed", "Select a user first.");
             return;
         }
         adminService.deleteUser(selected.getId());
@@ -160,24 +158,24 @@ public class AdminDashboardController {
     @FXML
     private void onAddCourse() {
         try {
-            String code = requireText(courseCodeField.getText(), "Course code is required.");
-            String name = requireText(courseNameField.getText(), "Course name is required.");
+            String code = UiHelpers.requireText(courseCodeField.getText(), "Course code is required.");
+            String name = UiHelpers.requireText(courseNameField.getText(), "Course name is required.");
 
             Instructor instructor = courseInstructorCombo.getValue();
 
             Course course = new Course(code,
                     name,
-                    emptyToNull(courseLevelField.getText()),
-                    emptyToNull(courseMajorField.getText()),
-                    emptyToNull(courseTimeField.getText()),
+                    UiHelpers.emptyToNull(courseLevelField.getText()),
+                    UiHelpers.emptyToNull(courseMajorField.getText()),
+                    UiHelpers.emptyToNull(courseTimeField.getText()),
                     instructor);
 
             adminService.addCourse(course);
             refreshCourses();
             clearCourseForm();
-            showSuccessToast("Course added successfully.");
+            UiHelpers.showSuccessToast(toastLabel, "Course added successfully.");
         } catch (RuntimeException exception) {
-            showError(exception.getMessage());
+            UiHelpers.showError("Validation Error", "Action failed", exception.getMessage());
         }
     }
 
@@ -185,7 +183,7 @@ public class AdminDashboardController {
     private void onDeleteCourse() {
         Course selected = coursesTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            showError("Select a course first.");
+            UiHelpers.showError("Validation Error", "Action failed", "Select a course first.");
             return;
         }
         adminService.deleteCourse(selected.getCode());
@@ -199,9 +197,9 @@ public class AdminDashboardController {
     }
 
     private User buildUserFromForm() {
-        String name = requireText(userNameField.getText(), "Name is required.");
-        String email = requireText(userEmailField.getText(), "Email is required.");
-        String password = requireText(userPasswordField.getText(), "Password is required.");
+        String name = UiHelpers.requireText(userNameField.getText(), "Name is required.");
+        String email = UiHelpers.requireText(userEmailField.getText(), "Email is required.");
+        String password = UiHelpers.requireText(userPasswordField.getText(), "Password is required.");
         Role role = userRoleCombo.getValue();
         if (role == null) {
             throw new IllegalArgumentException("Role is required.");
@@ -226,7 +224,7 @@ public class AdminDashboardController {
                 email,
                 password,
                 level,
-                emptyToNull(userMajorField.getText()),
+                UiHelpers.emptyToNull(userMajorField.getText()),
                 grade,
                 department);
     }
@@ -242,29 +240,13 @@ public class AdminDashboardController {
     }
 
     private Integer parseOptionalInteger(String text) {
-        String value = emptyToNull(text);
+        String value = UiHelpers.emptyToNull(text);
         return value == null ? null : Integer.parseInt(value);
     }
 
     private Double parseOptionalDouble(String text) {
-        String value = emptyToNull(text);
+        String value = UiHelpers.emptyToNull(text);
         return value == null ? null : Double.parseDouble(value);
-    }
-
-    private String requireText(String value, String message) {
-        String trimmed = emptyToNull(value);
-        if (trimmed == null) {
-            throw new IllegalArgumentException(message);
-        }
-        return trimmed;
-    }
-
-    private String emptyToNull(String value) {
-        if (value == null) {
-            return null;
-        }
-        String trimmed = value.trim();
-        return trimmed.isEmpty() ? null : trimmed;
     }
 
     private void clearUserForm() {
@@ -310,28 +292,5 @@ public class AdminDashboardController {
         }
     }
 
-    private void showError(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Validation Error");
-        alert.setHeaderText("Action failed");
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-    private void showSuccessToast(String message) {
-        if (toastLabel == null) {
-            return;
-        }
-        toastLabel.setText(message);
-        toastLabel.setManaged(true);
-        toastLabel.setVisible(true);
-
-        PauseTransition hideLater = new PauseTransition(Duration.seconds(2.5));
-        hideLater.setOnFinished(event -> {
-            toastLabel.setVisible(false);
-            toastLabel.setManaged(false);
-        });
-        hideLater.play();
-    }
 }
 

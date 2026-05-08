@@ -1,6 +1,6 @@
 package org.example.ums.ui;
 
-import org.example.ums.dao.JpaUtil;
+import org.example.ums.service.JpaUtil;
 import org.example.ums.service.DataBootstrapService;
 
 import javafx.application.Application;
@@ -18,4 +18,3 @@ public class UmsFxApplication extends Application {
         stage.setOnCloseRequest(event -> JpaUtil.shutdown());
     }
 }
-

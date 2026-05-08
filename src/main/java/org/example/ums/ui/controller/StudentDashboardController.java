@@ -9,16 +9,15 @@ import org.example.ums.entity.User;
 import org.example.ums.service.AcademicManagementService;
 import org.example.ums.service.AcademicQueryService;
 import org.example.ums.ui.SceneNavigator;
+import org.example.ums.ui.UiHelpers;
 import org.example.ums.ui.UserSession;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.animation.PauseTransition;
 import javafx.event.ActionEvent;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -33,7 +32,6 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.util.Duration;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -124,13 +122,13 @@ public class StudentDashboardController {
 
         Course selectedCourse = availableCoursesTable.getSelectionModel().getSelectedItem();
         if (selectedCourse == null) {
-            showError("Select a course to enroll.");
+            UiHelpers.showError("Action Error", "Operation failed", "Select a course to enroll.");
             return;
         }
 
         boolean enrolled = managementService.enrollStudentInCourse(currentStudent.getId(), selectedCourse.getCode());
         if (!enrolled) {
-            showError("Enrollment failed.");
+            UiHelpers.showError("Action Error", "Operation failed", "Enrollment failed.");
             return;
         }
 
@@ -145,13 +143,13 @@ public class StudentDashboardController {
 
         Quiz selectedQuiz = quizzesTable.getSelectionModel().getSelectedItem();
         if (selectedQuiz == null) {
-            showError("Select a quiz first.");
+            UiHelpers.showError("Action Error", "Operation failed", "Select a quiz first.");
             return;
         }
 
         List<Question> questions = queryService.getQuestionsForStudentQuiz(currentStudent.getId(), selectedQuiz.getId());
         if (questions.isEmpty()) {
-            showError("No questions found for this quiz in your enrolled courses.");
+            UiHelpers.showError("Action Error", "Operation failed", "No questions found for this quiz in your enrolled courses.");
             return;
         }
 
@@ -163,7 +161,7 @@ public class StudentDashboardController {
         QuizResult quizResult = managementService.submitQuizAttempt(currentStudent.getId(), selectedQuiz.getId(), answers.get())
                 .orElseThrow(() -> new IllegalStateException("Could not submit quiz."));
 
-        showSuccessToast("Quiz submitted. Score: " + quizResult.getScore());
+        UiHelpers.showSuccessToast(toastLabel, "Quiz submitted. Score: " + quizResult.getScore());
 
         refreshDashboard();
     }
@@ -404,28 +402,6 @@ public class StudentDashboardController {
         return value == null ? "-" : value;
     }
 
-    private void showError(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR, message, ButtonType.OK);
-        alert.setTitle("Action Error");
-        alert.setHeaderText("Operation failed");
-        alert.showAndWait();
-    }
-
-    private void showSuccessToast(String message) {
-        if (toastLabel == null) {
-            return;
-        }
-        toastLabel.setText(message);
-        toastLabel.setManaged(true);
-        toastLabel.setVisible(true);
-
-        PauseTransition hideLater = new PauseTransition(Duration.seconds(2.5));
-        hideLater.setOnFinished(event -> {
-            toastLabel.setVisible(false);
-            toastLabel.setManaged(false);
-        });
-        hideLater.play();
-    }
 
     @FXML
     private void onLogout() {
