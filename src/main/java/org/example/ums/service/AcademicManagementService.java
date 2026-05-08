@@ -17,16 +17,12 @@ import java.util.Set;
 public class AcademicManagementService {
 
     public Student addNewStudent(Student student) {
+        if (!ValidationUtil.isValidEmail(student.getEmail())) {
+            throw new IllegalArgumentException("Invalid email format: " + student.getEmail());
+        }
         return JpaUtil.executeInTransaction(entityManager -> {
             entityManager.persist(student);
             return student;
-        });
-    }
-
-    public Course addNewCourse(Course course) {
-        return JpaUtil.executeInTransaction(entityManager -> {
-            entityManager.persist(course);
-            return course;
         });
     }
 
@@ -91,18 +87,6 @@ public class AcademicManagementService {
             boolean addedToCourse = course.getStudents().add(student);
             boolean addedToStudent = student.getCourses().add(course);
             return addedToCourse || addedToStudent;
-        });
-    }
-
-    public boolean deleteQuiz(Integer quizId) {
-        return JpaUtil.executeInTransaction(entityManager -> {
-            Quiz quiz = entityManager.find(Quiz.class, quizId);
-            if (quiz == null) {
-                return false;
-            }
-
-            entityManager.remove(quiz);
-            return true;
         });
     }
 

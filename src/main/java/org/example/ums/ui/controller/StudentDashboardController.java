@@ -136,6 +136,39 @@ public class StudentDashboardController {
     }
 
     @FXML
+    private void onDropSelectedCourse() {
+        if (currentStudent == null) {
+            return;
+        }
+
+        Course selectedCourse = coursesTable.getSelectionModel().getSelectedItem();
+        if (selectedCourse == null) {
+            UiHelpers.showError("Action Error", "Operation failed", "Select a course to drop.");
+            return;
+        }
+
+        // Confirm drop action
+        ButtonType result = UiHelpers.showConfirmation(
+                "Confirm Drop",
+                "Drop Course",
+                "Are you sure you want to drop " + selectedCourse.getCourseName() + "?"
+        );
+
+        if (result != ButtonType.OK) {
+            return;
+        }
+
+        boolean dropped = managementService.removeStudentFromCourse(currentStudent.getId(), selectedCourse.getCode());
+        if (!dropped) {
+            UiHelpers.showError("Action Error", "Operation failed", "Failed to drop course.");
+            return;
+        }
+
+        UiHelpers.showSuccessToast(toastLabel, "Course dropped successfully.");
+        refreshDashboard();
+    }
+
+    @FXML
     private void onTakeSelectedQuiz() {
         if (currentStudent == null) {
             return;
