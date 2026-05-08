@@ -34,6 +34,13 @@ public final class UiHelpers {
         alert.showAndWait();
     }
 
+    public static ButtonType showConfirmation(String title, String header, String message) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, message, ButtonType.OK, ButtonType.CANCEL);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        return alert.showAndWait().orElse(ButtonType.CANCEL);
+    }
+
     public static void showSuccessToast(Label toastLabel, String message) {
         if (toastLabel == null) {
             return;

@@ -44,6 +44,9 @@
             <TableColumn fx:id="courseTimeColumn" text="Lecture Time" prefWidth="200"/>
         </columns>
     </TableView>
+    <HBox spacing="8" styleClass="action-row">
+        <Button text="Drop Selected Course" onAction="#onDropSelectedCourse" styleClass="danger-button"/>
+    </HBox>
 
     <Label text="Quizzes For Selected Course" styleClass="section-title"/>
     <TableView fx:id="quizzesTable" prefHeight="150">

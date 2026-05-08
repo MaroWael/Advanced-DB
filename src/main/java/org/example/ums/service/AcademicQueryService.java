@@ -28,13 +28,28 @@ public class AcademicQueryService {
     }
 
     public List<Course> getAvailableCoursesForStudent(Integer studentId) {
-        return JpaUtil.execute(entityManager -> entityManager.createQuery(
-                        "select c from Course c where c.code not in " +
-                                "(select ec.code from Student s join s.courses ec where s.id = :studentId) " +
-                                "order by c.code",
-                        Course.class)
+        return JpaUtil.execute(entityManager -> {
+            // Get the student to fetch their level
+            Student student = entityManager.find(Student.class, studentId);
+            if (student == null || student.getLevel() == null) {
+                return List.of(); // Return empty list if student not found or has no level
+            }
+
+            String studentLevel = String.valueOf(student.getLevel());
+
+            // Query available courses that:
+            // 1. Match the student's level (or have no level requirement)
+            // 2. Are not already enrolled by the student
+            return entityManager.createQuery(
+                    "select c from Course c where c.code not in " +
+                    "(select ec.code from Student s join s.courses ec where s.id = :studentId) " +
+                    "and (c.level is null or c.level = :studentLevel) " +
+                    "order by c.code",
+                    Course.class)
                 .setParameter("studentId", studentId)
-                .getResultList());
+                .setParameter("studentLevel", studentLevel)
+                .getResultList();
+        });
     }
 
     public List<Course> getCoursesForInstructor(Integer instructorId) {

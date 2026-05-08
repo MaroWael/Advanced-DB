@@ -5,11 +5,13 @@ import org.example.ums.entity.Instructor;
 import org.example.ums.entity.User;
 
 import java.util.List;
-import java.util.Optional;
 
 public class AdminManagementService {
 
     public User addUser(User user) {
+        if (!ValidationUtil.isValidEmail(user.getEmail())) {
+            throw new IllegalArgumentException("Invalid email format: " + user.getEmail());
+        }
         return JpaUtil.executeInTransaction(entityManager -> {
             entityManager.persist(user);
             return user;
@@ -64,10 +66,6 @@ public class AdminManagementService {
                         "select i from Instructor i order by i.name",
                         Instructor.class)
                 .getResultList());
-    }
-
-    public Optional<Instructor> findInstructorById(Integer instructorId) {
-        return JpaUtil.execute(entityManager -> Optional.ofNullable(entityManager.find(Instructor.class, instructorId)));
     }
 }
 
